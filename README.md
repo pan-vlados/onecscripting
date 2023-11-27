@@ -20,8 +20,8 @@ regsvr32 "C:\Program Files\1cv8\-version-\bin\comcntr.dll"
         - *(optional)* read/write/e.t.c;
     - set authentification by login and password (domain/OS not allowed, only 1C: Enterprise);
     - additional for COM connection in control panel (top bar):
-        - deselect *Tools -> User Settings -> Request confirmation when closing the program (Ñåðâèñ->Íàñòðîéêè ïîëüçîâàòåëÿ->Çàïðàøèâàòü ïîäòâåðæäåíèå ïðè çàêðûòèè ïðîãðàììû)*;
-        - select *Tools -> User Settings -> Prevent opening multiple sessions (Cåðâèñ->Íàñòðîéêè ïîëüçîâàòåëÿ->Çàïðåòèòü îòêðûòèå íåñêîëüêèõ ñåàíñîâ)*.
+        - deselect *Tools -> User Settings -> Request confirmation when closing the program (Ð¡ÐµÑ€Ð²Ð¸Ñ->ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ->Ð—Ð°Ð¿Ñ€Ð°ÑˆÐ¸Ð²Ð°Ñ‚ÑŒ Ð¿Ð¾Ð´Ñ‚Ð²ÐµÑ€Ð¶Ð´ÐµÐ½Ð¸Ðµ Ð¿Ñ€Ð¸ Ð·Ð°ÐºÑ€Ñ‹Ñ‚Ð¸Ð¸ Ð¿Ñ€Ð¾Ð³Ñ€Ð°Ð¼Ð¼Ñ‹)*;
+        - select *Tools -> User Settings -> Prevent opening multiple sessions (CÐµÑ€Ð²Ð¸Ñ->ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ¸ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ->Ð—Ð°Ð¿Ñ€ÐµÑ‚Ð¸Ñ‚ÑŒ Ð¾Ñ‚ÐºÑ€Ñ‹Ñ‚Ð¸Ðµ Ð½ÐµÑÐºÐ¾Ð»ÑŒÐºÐ¸Ñ… ÑÐµÐ°Ð½ÑÐ¾Ð²)*.
 
 ## Usage
 
@@ -125,4 +125,3 @@ with onec.connect(
 
 ## Lcence
 > MIT
-
