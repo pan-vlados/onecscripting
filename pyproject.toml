@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools >= 50.3.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "onecscripting"
+version = "1.0.0"
+dependencies = [
+  "pywin32"
+]
+requires-python = ">=3.8"
+authors = [
+  {name = "Vladislav Anisimov", email = "pan.vlados.w@gmail.com"}
+]
+maintainers = [
+  {name = "Vladislav Anisimov", email = "pan.vlados.w@gmail.com"}
+]
+description = "Purpose of this package is to simplify interaction with 1C databases through COMobjects using Python language."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["onec", "1C", "scripting", "script", "automation", "COMObject"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Microsoft :: Windows"
+]
+

@@ -1,0 +1,6 @@
+*.ini
+!test_config.ini
+.spyproject/
+__pycache__/
+venv/
+TODO.txt
