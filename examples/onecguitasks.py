@@ -75,4 +75,3 @@ def check_users_assigments(
                 message: str = '%s List:\n%s' % (return_message, '\n'.join(user for user in users_differense))
                 logger.warning(message)
     return users_authorizations, return_message
-

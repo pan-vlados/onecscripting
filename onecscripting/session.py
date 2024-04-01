@@ -15,4 +15,3 @@ class Session:
     time: str
     sessioninfo: str
     sessionnumber: str
-

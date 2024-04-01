@@ -119,5 +119,3 @@ class QueryIterator:
         if self.query.Next():
             return self.query
         raise StopIteration
-
-

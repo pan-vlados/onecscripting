@@ -214,4 +214,3 @@ class OneC(object):
         deselected in user's setting of the corresponding InfoBase.
         """
         self.connection = None
-

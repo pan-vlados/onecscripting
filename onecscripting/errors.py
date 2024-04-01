@@ -13,4 +13,3 @@ class CannotChangePasswordError(Exception):
 
 class PasswordIsNotChangedError(CannotChangePasswordError):
     pass
-

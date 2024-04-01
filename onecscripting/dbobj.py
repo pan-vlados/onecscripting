@@ -149,4 +149,3 @@ def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, ...], List[s
         (user.fullname, user.COMObject.OSUser): list(map(lambda x: x.name, user.roles))
         for user in users
         }
-
