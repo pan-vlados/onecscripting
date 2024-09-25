@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional, Set, Tuple, Union, Literal
+from typing import Dict, List, Literal, Optional, Set, Tuple, Union
 
 import win32com.client
 
@@ -22,7 +22,7 @@ def check_users_assigments(
             Tuple[Dict[Tuple[str, str, str], List[str]], Optional[str]],
             Tuple[Dict[Tuple[Optional[str], Literal['']], str], None],
             Tuple[None, str],
-            Tuple[None, None]
+            Tuple[None, None],
             ]:
     """Check the presence of users and roles in the 1C infobase
     via External connection (COMConnecter).

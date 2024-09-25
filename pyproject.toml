@@ -35,6 +35,7 @@ exclude = [
     "__pypackages__",
     "site-packages",
     "venv",
+    "tests"
 ]
 respect-gitignore = false
 fix = false
