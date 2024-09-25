@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional, Set, Tuple, Union
+from typing import Dict, List, Optional, Set, Tuple, Union, Literal
 
 import win32com.client
 
@@ -15,10 +15,15 @@ def check_users_assigments(
         new_users: bool,
         host: str,
         database: str,
-        return_message: Optional[str] = None,
+        return_message: Optional[str] = None,  # type: ignore
         retrospective_mode: bool = False,
         assignments_only_mode: bool = False,
-        ) -> Union[Optional[Dict[Tuple[str, ...], List[str]]], Optional[str]]:
+        ) -> Union[
+            Tuple[Dict[Tuple[str, str, str], List[str]], Optional[str]],
+            Tuple[Dict[Tuple[Optional[str], Literal['']], str], None],
+            Tuple[None, str],
+            Tuple[None, None]
+            ]:
     """Check the presence of users and roles in the 1C infobase
     via External connection (COMConnecter).
 
@@ -29,6 +34,9 @@ def check_users_assigments(
     """
     if retrospective_mode:
         infobase_users: List[Optional[User]] = connection.get_all_users()
+    elif assignments_only_mode and not users:
+        infobase_users: List[Optional[User]] = connection.get_all_users()
+        users = [user.fullname for user in infobase_users]  # type: ignore
     else:
         infobase_users: List[Optional[User]] = connection.get_active_users_by_fullname(users)
         if not infobase_users:  # no users in DB
@@ -37,17 +45,17 @@ def check_users_assigments(
             if new_users:
                 return None, None
             return_message = 'All users not found in in 1C Srvr=%s, Ref=%s.' % (host, database)
-            message: str = '%s List:\n%s' % (return_message, '\n'.join(user for user in users))
+            message: str = '%s List:\n%s' % (return_message, '\n'.join(user for user in users))  # type: ignore
             logger.warning(message)
             return None, return_message
         if new_users and not assignments_only_mode:
             return_message: str = 'Users already exists in 1C Srvr=%s, Ref=%s.' % (host, database)
-            message: str = '%s List:\n%s' % (return_message, '\n'.join(user.fullname for user in infobase_users))
+            message: str = '%s List:\n%s' % (return_message, '\n'.join(user.fullname for user in infobase_users))  # type: ignore
             logger.warning(message)
             return None, return_message
 
-    users_authorizations: Dict[Tuple[str, ...], List[str]] = get_authorizations_unique(
-        users=infobase_users,
+    users_authorizations: Dict[Tuple[str, str, str], List[str]] = get_authorizations_unique(
+        users=infobase_users,  # type: ignore
         )
 
     if not any(users_authorizations.values()):  # no user's roles in DB
@@ -57,18 +65,18 @@ def check_users_assigments(
         if assignments_only_mode:
             return {(user, ''): "WARNING: User haven't got any roles" for user in users}, None
         return_message: str = "Users haven't got any roles in 1C Srvr=%s, Ref=%s." % (host, database)
-        message: str = '%s List:\n%s' % (return_message, '\n'.join(user.fullname for user, _ in infobase_users))
+        message: str = '%s List:\n%s' % (return_message, '\n'.join(user.fullname for user, _ in infobase_users))  # type: ignore
         logger.warning(message)
         return None, return_message
 
     if not retrospective_mode:
-        users_differense: Set[Optional[str]] = set(users) - set(user for user, _ in users_authorizations)
+        users_differense: Set[Optional[str]] = set(users) - set(user for _, user, _ in users_authorizations)
         if users_differense:  # some users missing in DB
             if assignments_only_mode:
                 for user in users_differense:
-                    users_authorizations[(user, '')] = 'WARNING: User not found'
+                    users_authorizations[(user, '')] = 'WARNING: User not found'  # type: ignore
             else:
                 return_message = 'Users not found in in 1C Srvr=%s, Ref=%s.' % (host, database)
-                message: str = '%s List:\n%s' % (return_message, '\n'.join(user for user in users_differense))
+                message: str = '%s List:\n%s' % (return_message, '\n'.join(user for user in users_differense))  # type: ignore
                 logger.warning(message)
     return users_authorizations, return_message

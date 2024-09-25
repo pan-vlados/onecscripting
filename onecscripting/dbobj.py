@@ -142,10 +142,10 @@ def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, ...], List[s
     """Use OSuser value of User's objects to add uniqueness for user-role pairs.
 
     Return user authorizations {
-        (user.fullname, user.COMObject.OSUser): List[role.name]
+        (user.name, user.fullname, user.COMObject.OSUser): List[role.name]
         }
     """
     return {
-        (user.fullname, user.COMObject.OSUser): list(map(lambda x: x.name, user.roles))
+        (user.name, user.fullname, user.COMObject.OSUser): list(map(lambda x: x.name, user.roles))
         for user in users
         }
