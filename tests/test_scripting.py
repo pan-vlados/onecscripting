@@ -3,7 +3,7 @@ import logging
 import unittest
 from pathlib import Path
 
-from onecscripting.infobase import OneC
+from src.onecscripting.infobase import OneC
 
 
 TEST_CONFIG_FILENAME = 'test_config.ini'

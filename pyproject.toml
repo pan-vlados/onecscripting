@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "onecscripting"
 version = "1.0.0"
 dependencies = [
-  "pywin32"
+  "pywin32; platform_system == 'Windows'",
 ]
 requires-python = ">=3.8"
 authors = [

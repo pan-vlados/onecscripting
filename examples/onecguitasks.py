@@ -3,7 +3,7 @@ from typing import Dict, List, Literal, Optional, Set, Tuple, Union
 
 import win32com.client
 
-from onecscripting.dbobj import User, get_authorizations_unique
+from src.onecscripting.dbobj import User, get_authorizations_unique
 
 
 logger = logging.getLogger(__name__)
