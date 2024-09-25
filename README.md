@@ -123,5 +123,12 @@ with onec.connect(
 
 > For more information about usage please see additional examples in [/tests dir](tests) and [1C examples tasks](examples/onecguitasks.py).
 
-## Lcence
+
+## TODO:
+1) Implement PEP 249;
+2) Python standart async/await support;
+3) Check for password change applied.
+
+
+## LICENSE
 > MIT

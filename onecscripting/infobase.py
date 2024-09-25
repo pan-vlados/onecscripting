@@ -30,8 +30,8 @@ class OneC(object):
         'Srvr="$host";Ref="$database";Usr="$user";Pwd="$password";'
         )
 
-    def __init__(self) -> None:
-        self.connection: Optional[win32com.client.CDispatch] = None
+    connection: win32com.client.CDispatch
+
 
     @contextmanager
     def connect(self,
@@ -213,4 +213,4 @@ class OneC(object):
         Setting <Request confirmation when closing the program> must be
         deselected in user's setting of the corresponding InfoBase.
         """
-        self.connection = None
+        self.connection = None  # type: ignore

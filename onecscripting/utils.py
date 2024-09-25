@@ -14,8 +14,8 @@ T = TypeVar('T')
 
 def catch_com_error(func: Callable[..., T]) -> Callable[..., T]:
     """Catch and log all python com errors."""
-    @functools.wraps
-    def wrapper(*args: Any, **kwargs: Any) -> T:
+    @functools.wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> ...:
         try:
             return func(*args, **kwargs)
         except pythoncom.com_error as ex:

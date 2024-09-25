@@ -102,7 +102,7 @@ class User:
         last_password_change_date: datetime = datetime.strptime(
             str(self.password_setting_date), '%Y-%m-%d %H:%M:%S%z'
             )
-        expire_delta: datetime = timedelta(days=days_to_expire)
+        expire_delta: timedelta = timedelta(days=days_to_expire)
         # Calculate estimated password expiration date from last password change.
         estimated_expire_date: datetime = last_password_change_date + expire_delta
         # Find current date with timezone parameter (we always receive date
