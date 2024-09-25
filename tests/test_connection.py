@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
+import configparser
 import logging
 import unittest
-import configparser
-
-from pathlib import Path
 from contextlib import contextmanager
+from pathlib import Path
 
 from onecscripting.infobase import OneC
 
@@ -13,7 +11,7 @@ TEST_CONFIG_FILENAME = 'test_config.ini'
 logging.basicConfig(
                 format='[%(levelname)s] %(asctime)s - %(message)s',
                 datefmt='%d.%m.%Y %H:%M',
-                level=logging.CRITICAL
+                level=logging.CRITICAL,
                 )
 logger = logging.getLogger(__name__)
 
@@ -51,5 +49,5 @@ class TestConnection(unittest.TestCase):
         results = [foo.result()]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main(verbosity=2)

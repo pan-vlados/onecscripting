@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
+import configparser
 import logging
 import unittest
-import configparser
-
 from pathlib import Path
-from contextlib import contextmanager
 
 from onecscripting.infobase import OneC
 
@@ -13,7 +10,7 @@ TEST_CONFIG_FILENAME = 'test_config.ini'
 logging.basicConfig(
     format='\n[%(levelname)s] %(asctime)s - %(message)s',
     datefmt='%d.%m.%Y %H:%M',
-    level=logging.DEBUG  # set to CRITICAL if you are not interested to see some results
+    level=logging.DEBUG,  # set to CRITICAL if you are not interested to see some results
 )
 logger = logging.getLogger(__name__)
 
@@ -26,7 +23,7 @@ class TestOneCDB(unittest.TestCase):
         cls.config_dbtest.read(Path(__file__).absolute().parent / TEST_CONFIG_FILENAME)
         cls.onec = OneC()
         cls._resource = cls.onec.connect(
-            **dict(cls.config_dbtest.items('DBTEST'))
+            **dict(cls.config_dbtest.items('DBTEST')),
             )
         cls._resource.__enter__()
 
@@ -67,7 +64,7 @@ class TestOneCDB(unittest.TestCase):
             return
         days_to_expire: int = 0
         if user.password_is_expire(
-                days_to_expire=days_to_expire
+                days_to_expire=days_to_expire,
                 ):
             logger.debug(f'Password expired. {user.password_setting_date=}, {days_to_expire=}.')
 
@@ -87,7 +84,7 @@ class TestOneCDB(unittest.TestCase):
             self.assertEqual(user.fullname, fullname)
             logging.debug(
                 'User=%s:\n%s' %
-                (user.name, '\n'.join(f'Role Name={user_role.Name}, Synonym={user_role.Synonym}' for user_role in user.roles))
+                (user.name, '\n'.join(f'Role Name={user_role.Name}, Synonym={user_role.Synonym}' for user_role in user.roles)),
                 )
 
 
@@ -105,12 +102,12 @@ class TestOneCDB(unittest.TestCase):
             """
         query = self.onec.execute_query(
             query,
-            username=self.config_dbtest.get('TEST_VALUES', 'user_fullname1')
+            username=self.config_dbtest.get('TEST_VALUES', 'user_fullname1'),
             )
         try:
             while query.__next__():
                 logger.debug(
-                    f'\n {query.query.name} {query.query.dates} {query.query.deletemark}'
+                    f'\n {query.query.name} {query.query.dates} {query.query.deletemark}',
                     )
         except StopIteration:
             pass
@@ -132,7 +129,7 @@ class TestOneCDB(unittest.TestCase):
                 logger.debug('№%s:\n%s %s' %
                     (query.query.number,
                     self.onec.to_string(query.query.name),
-                    self.onec.to_string(query.query.group_link))
+                    self.onec.to_string(query.query.group_link)),
                     )
         except StopIteration:
             pass
@@ -156,7 +153,7 @@ class TestOneCDB(unittest.TestCase):
         usernames.append(self.config_dbtest.get('TEST_VALUES', 'user_deleted1'))
         query = self.onec.execute_query(
             query,
-            usernames=usernames
+            usernames=usernames,
             )
         logger.debug('test_query_with_array_parameters:\n%s' % '\n'.join(row.user for row in query))
 

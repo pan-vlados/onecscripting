@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
-import logging
-import pythoncom
 import functools
+import logging
+from typing import Any, Callable, TypeVar
 
-from typing import Callable, TypeVar, Any
+import pythoncom
 
 
 logger = logging.getLogger(__name__)
