@@ -7,3 +7,4 @@ venv/
 TODO.txt
 *.egg-info
 dist/
+build/
