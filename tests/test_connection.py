@@ -19,11 +19,11 @@ logger = logging.getLogger(__name__)
 class TestConnection(unittest.TestCase):
 
     @classmethod
-    def setUp(self):
+    def setUp(cls):
         config = configparser.ConfigParser()
         config.read(Path(__file__).absolute().parent / TEST_CONFIG_FILENAME)
-        self.config_dbtest = dict(config.items('DBTEST'))
-        self.onec = OneC()
+        cls.config_dbtest = dict(config.items('DBTEST'))
+        cls.onec = OneC()
 
     @contextmanager
     def assertNotRaises(self, exc_type):  # example from https://gist.github.com/hzlmn/6b7bc384301afefcac6de3829bd4c032

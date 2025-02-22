@@ -47,11 +47,13 @@ class OneC:
         which you can't close.
 
         Way to connect without context manager:
+        ```python
             onec = OneC()
             connection = onec.connect(host, database, user, password)
             connection.__enter__()
             # do some stuff
             connection.__exit__(None, None, None)
+        ```
         """
         # Initializes the COM library for use by the calling thread, sets the
         # thread's concurrency model, and creates a new apartment for the thread
@@ -106,16 +108,17 @@ class OneC:
             2) ГруппыПользователейПользователиГруппы.Пользователь IN (&МассивПользователей)
 
         Default use:
+        ```python
             for value in query:
                 value.property
                 ...
-
+        ```
         """
         return Query(
             self.connection,
             statement=statement,
-            parameters=parameters,
-            ).result(unload=False)
+            **parameters,
+            ).result(unload=unload)
 
     def to_string(self, COMObject: win32com.client.CDispatch) -> str:
         """Convert 1C COMObject to string representation.
@@ -128,7 +131,7 @@ class OneC:
             split_pattern: str = '; | \(|, |\)',
             ) -> Dict[int, Session]:
         """Get information about working sessions in InfoBase
-        delimited by split_pattern.
+        delimited by `split_pattern`.
         """
         return {
             i: Session(
@@ -146,8 +149,9 @@ class OneC:
         """Return user by login credentials in InfoBase if user exists.
 
         Example:
+        ```python
             name='1C_Jhon D.'
-
+        ```
         """
         user = self.connection.InfoBaseUsers.FindByName(name)
         if not user:
@@ -166,37 +170,63 @@ class OneC:
             if user.FullName == fullname:
                 return User(user)
 
-    def get_all_users(self) -> List[User]:
+    def get_all_users(self,
+            with_deletion_mark: bool = False,
+            unload: bool = False,
+            ) -> List[User]:
         """Get all InfoBase users."""
+        if with_deletion_mark:
+            statement: str = """
+            SELECT
+                Users.ИдентификаторПользователяИБ AS uuid,
+                Users.DeletionMark AS deletion_mark
+            FROM
+                Catalog.Пользователи AS Users
+            WHERE
+                Users.ИдентификаторПользователяИБ IS NOT NULL
+            """
+            query = Query(
+                self.connection,
+                statement=statement,
+                parameters=None
+                ).result(unload=unload)
+            return [
+                User(COMObject, user.deletion_mark)
+                for user in query if hasattr(COMObject:=self.connection.InfoBaseUsers.FindByUUID(user.uuid), 'Name')
+                ]  # TODO: without hasattr AttributeError for COMObject: 'NoneType' object has no attribute 'Name'
         return [User(user) for user in self.connection.InfoBaseUsers.GetUsers()]
 
     def get_active_users_by_fullname(
             self,
             full_names: List[str],
-            unload: bool = False,
+            with_deletion_mark: bool = False,
+            unload: bool = False
             ) -> List[User]:
-        """Checking for the existing of users in the 1C users catalog
+        """
+        Checking for the existing of users in the 1C users catalog
         by full_names. If deletion mark for user is set to True, this
-        user will be skipped.
+        user will be shown as well.
 
         Return list of users which exists in 1C users catalog.
         """
         statement: str = """
         SELECT
-            Users.ИдентификаторПользователяИБ AS uuid
+            Users.ИдентификаторПользователяИБ AS uuid,
+            Users.DeletionMark AS deletion_mark
         FROM
             Catalog.Пользователи AS Users
         WHERE
             Users.Description IN (&full_names)
-            AND NOT Users.DeletionMark
         """
+        if not with_deletion_mark:
+            statement += ' AND NOT Users.DeletionMark'
         query = Query(
             self.connection,
             statement=statement,
-            parameters={'full_names': full_names},
+            parameters={'full_names': full_names}
             ).result(unload=unload)
         return [
-            User(self.connection.InfoBaseUsers.FindByUUID(user.uuid))
+            User(self.connection.InfoBaseUsers.FindByUUID(user.uuid), user.deletion_mark)
             for user in query
             ]
 

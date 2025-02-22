@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import win32com.client
 from pywintypes import TimeType
@@ -39,15 +39,20 @@ class User:
 
     __slots__ = (
         'name', 'fullname', 'roles', 'password_is_set',
-        'password_setting_date', 'COMObject',
+        'password_setting_date', 'COMObject', 'deletion_mark'
         )
 
-    def __init__(self, COMObject: win32com.client.CDispatch) -> None:
+    def __init__(
+            self,
+            COMObject: win32com.client.CDispatch,
+            deletion_mark: Optional[bool] = None
+            ) -> None:
         self.name: str = COMObject.Name
         self.fullname: str = COMObject.FullName
         self.roles: List[win32com.client.CDispatch] = COMObject.Roles
-        self.password_is_set: bool = COMObject.PasswordIsSet  # TODO: property
-        self.password_setting_date: TimeType = COMObject.PasswordSettingDate  # TODO: property
+        self.password_is_set: bool = COMObject.PasswordIsSet
+        self.password_setting_date: TimeType = COMObject.PasswordSettingDate
+        self.deletion_mark = deletion_mark
         self.COMObject: win32com.client.CDispatch = COMObject
 
     def __repr__(self) -> str:
@@ -95,8 +100,8 @@ class User:
 
         Parameters
         ----------
-            days_to_expire - number of days in which you expect the password to expire;
-            tz - databaze timezone, by default UTC+00.
+        - `days_to_expire` - number of days in which you expect the password to expire;
+        - `tz` - databaze timezone, by default UTC+00.
 
         """
         # Convert to apropriate date format.
@@ -112,40 +117,32 @@ class User:
         return current_date > estimated_expire_date
 
 
-def get_authorizations(users: List[User], by_name: bool = False) -> Dict[str, List[str]]:
-    """Return user authorizations {user.fullname: List[role.name]}
-    or {user.name: List[role.name]} if by_name=True use fullname as primary key.
+def get_authorizations(users: List[User]) -> Dict[str, List[str]]:
+    """Return user authorizations `{user.fullname: List[role.name]}`
 
-    Warning:
-        If by_name=False (default) you can recive collisions due to the fact,
-        that user.fullname is not unique object in InfoBase. It can give
-        False-Positive results when user.fullname contain roles for other user
-        with same user.fullname.
-        To avoid this behavior use get_authorizations_unique function,
+    WARNING:
+        You can recive collisions due to the fact, that user.fullname
+        is not unique object in InfoBase. It can give False-Positive
+        results when user.fullname contain roles for other user with same
+        user.fullname.
+        To avoid this behavior use 'get_authorizations_unique' method,
         which allows you to work with pairs of tuples like
         (user.fullname, user.COMObject.OSUser) as an unique dictionary
         keys.
-
     """
-    if by_name:
-        return {
-            user.name: list(map(lambda x: x.name, user.roles))
-            for user in users
-            }
     return {
         user.fullname: list(map(lambda x: x.name, user.roles))
         for user in users
         }
 
-
-def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, ...], List[str]]:
+def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, str, Any, Optional[bool]], List[str]]:
     """Use OSuser value of User's objects to add uniqueness for user-role pairs.
 
-    Return user authorizations {
-        (user.name, user.fullname, user.COMObject.OSUser): List[role.name]
-        }
+    Return user authorizations `{
+    (user.name, user.fullname, user.COMObject.OSUser, user.deletion_mark): List[role.name]
+    }`
     """
     return {
-        (user.name, user.fullname, user.COMObject.OSUser): list(map(lambda x: x.name, user.roles))
+        (user.name, user.fullname, user.COMObject.OSUser, user.deletion_mark): list(map(lambda x: x.name, user.roles))
         for user in users
         }

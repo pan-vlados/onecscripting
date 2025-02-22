@@ -20,7 +20,7 @@ class Query:
         if parameters:
             self.set_parameters(**parameters)
 
-    def set_parameters(self, parameters: Dict[str, Union[str, List[str]]]) -> None:
+    def set_parameters(self, **parameters: Optional[Dict[str, Union[str, List[str]]]]) -> None:
         """Parameters can be used in the query statement, which must
         be explicitly passed to the query statement using the
         SetParameter() method of the query object. This method allow
@@ -53,9 +53,11 @@ class Query:
         data in memory.
         Return a list (named table in 1C) of query object's values.
         You can go through list by simple python loop:
+        ```python
             for value in query:
                 value.property
                 ...
+        ```
         """
         return self.query.Unload()
 
@@ -65,9 +67,11 @@ class Query:
 
         Return query object (iterator) which you can go trought
         by method:
+        ```python
             for value in query:
                 value.property
                 ...
+        ```
         """
         return QueryIterator(self.query.Choose())
 
@@ -92,13 +96,17 @@ class QueryIterator:
     new row value.
 
     Before:
+    ```python
         while query.Next():
             query.property
             ...
+    ```
     Now:
+    ```python
         for value in query:
             value.property
             ...
+    ```
     """
 
     def __init__(self, query) -> None:
