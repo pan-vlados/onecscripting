@@ -38,8 +38,13 @@ class User:
     """
 
     __slots__ = (
-        'name', 'fullname', 'roles', 'password_is_set',
-        'password_setting_date', 'COMObject', 'deletion_mark'
+        'COMObject',
+        'deletion_mark',
+        'fullname',
+        'name',
+        'password_is_set',
+        'password_setting_date',
+        'roles'
         )
 
     def __init__(
@@ -120,7 +125,7 @@ class User:
 def get_authorizations(users: List[User]) -> Dict[str, List[str]]:
     """Return user authorizations `{user.fullname: List[role.name]}`
 
-    WARNING:
+    Warning:
         You can recive collisions due to the fact, that user.fullname
         is not unique object in InfoBase. It can give False-Positive
         results when user.fullname contain roles for other user with same
@@ -129,6 +134,7 @@ def get_authorizations(users: List[User]) -> Dict[str, List[str]]:
         which allows you to work with pairs of tuples like
         (user.fullname, user.COMObject.OSUser) as an unique dictionary
         keys.
+
     """
     return {
         user.fullname: list(map(lambda x: x.name, user.roles))

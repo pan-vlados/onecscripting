@@ -113,6 +113,7 @@ class OneC:
                 value.property
                 ...
         ```
+
         """
         return Query(
             self.connection,
@@ -152,6 +153,7 @@ class OneC:
         ```python
             name='1C_Jhon D.'
         ```
+
         """
         user = self.connection.InfoBaseUsers.FindByName(name)
         if not user:
@@ -202,8 +204,7 @@ class OneC:
             with_deletion_mark: bool = False,
             unload: bool = False
             ) -> List[User]:
-        """
-        Checking for the existing of users in the 1C users catalog
+        """Checking for the existing of users in the 1C users catalog
         by full_names. If deletion mark for user is set to True, this
         user will be shown as well.
 
