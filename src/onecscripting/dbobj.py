@@ -44,14 +44,12 @@ class User:
         'name',
         'password_is_set',
         'password_setting_date',
-        'roles'
-        )
+        'roles',
+    )
 
     def __init__(
-            self,
-            COMObject: win32com.client.CDispatch,
-            deletion_mark: Optional[bool] = None
-            ) -> None:
+        self, COMObject: win32com.client.CDispatch, deletion_mark: Optional[bool] = None
+    ) -> None:
         self.name: str = COMObject.Name
         self.fullname: str = COMObject.FullName
         self.roles: List[win32com.client.CDispatch] = COMObject.Roles
@@ -82,7 +80,9 @@ class User:
 
         """
         if self.COMObject.CannotChangePassword:
-            raise CannotChangePasswordError('%s. Check permission to change password for User.' % self)
+            raise CannotChangePasswordError(
+                '%s. Check permission to change password for User.' % self
+            )
         # TODO: old_hash: str = self.COMObject.StoredPasswordValue
         self.COMObject.Password = password
         self.COMObject.Write()
@@ -97,10 +97,10 @@ class User:
         # TODO:      raise PasswordIsNotChangedError('%s. Password hash didn\'t change.' % self)
 
     def password_is_expire(
-            self,
-            days_to_expire: int = 90,
-            tz: timezone = timezone.utc,
-            ) -> bool:
+        self,
+        days_to_expire: int = 90,
+        tz: timezone = timezone.utc,
+    ) -> bool:
         """Check when user's password is expired.
 
         Parameters
@@ -111,8 +111,9 @@ class User:
         """
         # Convert to apropriate date format.
         last_password_change_date: datetime = datetime.strptime(
-            str(self.password_setting_date), '%Y-%m-%d %H:%M:%S%z',
-            )
+            str(self.password_setting_date),
+            '%Y-%m-%d %H:%M:%S%z',
+        )
         expire_delta: timedelta = timedelta(days=days_to_expire)
         # Calculate estimated password expiration date from last password change.
         estimated_expire_date: datetime = last_password_change_date + expire_delta
@@ -136,12 +137,12 @@ def get_authorizations(users: List[User]) -> Dict[str, List[str]]:
         keys.
 
     """
-    return {
-        user.fullname: list(map(lambda x: x.name, user.roles))
-        for user in users
-        }
+    return {user.fullname: list(map(lambda x: x.name, user.roles)) for user in users}
 
-def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, str, Any, Optional[bool]], List[str]]:
+
+def get_authorizations_unique(
+    users: List[User],
+) -> Dict[Tuple[str, str, Any, Optional[bool]], List[str]]:
     """Use OSuser value of User's objects to add uniqueness for user-role pairs.
 
     Return user authorizations `{
@@ -149,6 +150,8 @@ def get_authorizations_unique(users: List[User]) -> Dict[Tuple[str, str, Any, Op
     }`
     """
     return {
-        (user.name, user.fullname, user.COMObject.OSUser, user.deletion_mark): list(map(lambda x: x.name, user.roles))
+        (user.name, user.fullname, user.COMObject.OSUser, user.deletion_mark): list(
+            map(lambda x: x.name, user.roles)
+        )
         for user in users
-        }
+    }

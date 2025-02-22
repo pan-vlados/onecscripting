@@ -7,16 +7,17 @@ import win32com.client
 class Query:
     """Implementation of 1C SQL query."""
 
-    def __init__(self,
-                 connection: win32com.client.CDispatch,
-                 statement: str,
-                 **parameters: Optional[Dict[str, Union[str, List[str]]]],
-                 ) -> None:
+    def __init__(
+        self,
+        connection: win32com.client.CDispatch,
+        statement: str,
+        **parameters: Optional[Dict[str, Union[str, List[str]]]],
+    ) -> None:
         self._connection: win32com.client.CDispatch = connection
         self.query: win32com.client.CDispatch = self._connection.NewObject(
             'Query',
             statement,
-            )
+        )
         if parameters:
             self.set_parameters(**parameters)
 
@@ -109,7 +110,7 @@ class QueryIterator:
     ```
     """
 
-    def __init__(self, query) -> None:
+    def __init__(self, query: win32com.client.CDispatch) -> None:
         self.query = query
 
     def __iter__(self) -> QueryIterator:

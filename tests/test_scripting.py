@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 
 class TestOneCDB(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.config_dbtest = configparser.ConfigParser()
@@ -24,16 +23,16 @@ class TestOneCDB(unittest.TestCase):
         cls.onec = OneC()
         cls._resource = cls.onec.connect(
             **dict(cls.config_dbtest.items('DBTEST')),
-            )
+        )
         cls._resource.__enter__()
 
     # @unittest.skip('Skipped')
     def test_session_in_connection_info(self):
         for session in self.onec.sessions.values():
-            if test_result:=(
-                    session.login == self.config_dbtest.get('DBTEST', 'user')\
-                    and session.connectiontype == 'COMConnection'
-                    ):
+            if test_result := (
+                session.login == self.config_dbtest.get('DBTEST', 'user')
+                and session.connectiontype == 'COMConnection'
+            ):
                 logger.debug('%s' % session)
                 break
         else:
@@ -64,8 +63,8 @@ class TestOneCDB(unittest.TestCase):
             return
         days_to_expire: int = 0
         if user.password_is_expire(
-                days_to_expire=days_to_expire,
-                ):
+            days_to_expire=days_to_expire,
+        ):
             logger.debug(f'Password expired. {user.password_setting_date=}, {days_to_expire=}.')
 
     # @unittest.skip('Skipped')
@@ -83,10 +82,15 @@ class TestOneCDB(unittest.TestCase):
                 continue
             self.assertEqual(user.fullname, fullname)
             logging.debug(
-                'User=%s:\n%s' %
-                (user.name, '\n'.join(f'Role Name={user_role.Name}, Synonym={user_role.Synonym}' for user_role in user.roles)),
-                )
-
+                'User=%s:\n%s'
+                % (
+                    user.name,
+                    '\n'.join(
+                        f'Role Name={user_role.Name}, Synonym={user_role.Synonym}'
+                        for user_role in user.roles
+                    ),
+                ),
+            )
 
     # @unittest.skip('Skipped')
     def test_query_iteraitor1(self):
@@ -103,12 +107,12 @@ class TestOneCDB(unittest.TestCase):
         query = self.onec.execute_query(
             query,
             username=self.config_dbtest.get('TEST_VALUES', 'user_fullname1'),
-            )
+        )
         try:
             while query.__next__():
                 logger.debug(
                     f'\n {query.query.name} {query.query.dates} {query.query.deletemark}',
-                    )
+                )
         except StopIteration:
             pass
 
@@ -126,11 +130,14 @@ class TestOneCDB(unittest.TestCase):
         query = self.onec.execute_query(query)
         try:
             while query.__next__():
-                logger.debug('№%s:\n%s %s' %
-                    (query.query.number,
-                    self.onec.to_string(query.query.name),
-                    self.onec.to_string(query.query.group_link)),
-                    )
+                logger.debug(
+                    '№%s:\n%s %s'
+                    % (
+                        query.query.number,
+                        self.onec.to_string(query.query.name),
+                        self.onec.to_string(query.query.group_link),
+                    ),
+                )
         except StopIteration:
             pass
 
@@ -147,23 +154,20 @@ class TestOneCDB(unittest.TestCase):
             AND Users.ПометкаУдаления = False
         """
         usernames = [
-            self.config_dbtest.get('TEST_VALUES', f'user_fullname{i}')
-            for i in range(1, 3)
-            ]
+            self.config_dbtest.get('TEST_VALUES', f'user_fullname{i}') for i in range(1, 3)
+        ]
         usernames.append(self.config_dbtest.get('TEST_VALUES', 'user_deleted1'))
         query = self.onec.execute_query(
             query,
             usernames=usernames,
-            )
+        )
         logger.debug('test_query_with_array_parameters:\n%s' % '\n'.join(row.user for row in query))
-
 
     @classmethod
     def tearDownClass(cls):
         if logger.level == logging.DEBUG:
             print()
         cls._resource.__exit__(None, None, None)
-
 
 
 if __name__ == '__main__':
