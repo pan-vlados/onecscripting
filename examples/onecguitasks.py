@@ -32,16 +32,17 @@ def check_users_assigments(
     IMPORTANT! In asignments_only_mode=True keep silence and doesn't send return
     messages despite of result, cause we don't need to care about it.
     """
+    infobase_users: List[Optional[User]]
     with_deletion_mark: bool = True if assignments_only_mode else False
     if retrospective_mode:
-        infobase_users: List[Optional[User]] = connection.get_all_users()
+        infobase_users = connection.get_all_users()
     elif assignments_only_mode and not users:
-        infobase_users: List[Optional[User]] = connection.get_all_users(
+        infobase_users = connection.get_all_users(
             with_deletion_mark=with_deletion_mark
         )
         users = [user.fullname for user in infobase_users]  # type: ignore
     else:
-        infobase_users: List[Optional[User]] = connection.get_active_users_by_fullname(
+        infobase_users = connection.get_active_users_by_fullname(
             users, with_deletion_mark=with_deletion_mark
         )
         if not infobase_users:  # no users in DB
@@ -57,8 +58,8 @@ def check_users_assigments(
             return_message: str = 'Users already exists in 1C Srvr=%s, Ref=%s.' % (host, database)
             message: str = '%s List:\n%s' % (
                 return_message,
-                '\n'.join(user.fullname for user in infobase_users),
-            )  # type: ignore
+                '\n'.join(user.fullname for user in infobase_users),  # type: ignore
+            )
             logger.warning(message)
             return None, return_message
 
@@ -82,8 +83,8 @@ def check_users_assigments(
         )
         message: str = '%s List:\n%s' % (
             return_message,
-            '\n'.join(user.fullname for user, _ in infobase_users),
-        )  # type: ignore
+            '\n'.join(user.fullname for user, _ in infobase_users),  # type: ignore
+        )
         logger.warning(message)
         return None, return_message
 
@@ -99,7 +100,7 @@ def check_users_assigments(
                 return_message = 'Users not found in in 1C Srvr=%s, Ref=%s.' % (host, database)
                 message: str = '%s List:\n%s' % (
                     return_message,
-                    '\n'.join(user for user in users_differense),
-                )  # type: ignore
+                    '\n'.join(user for user in users_differense),  # type: ignore
+                )
                 logger.warning(message)
     return users_authorizations, return_message
